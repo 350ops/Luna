@@ -1,59 +1,129 @@
-import Header, { HeaderIcon } from '@/components/Header';
-import ThemeScroller from '@/components/ThemeScroller';
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Pressable, Image, KeyboardAvoidingView, Platform } from 'react-native';
-import Icon from '@/components/Icon';
-import ThemedText from '@/components/ThemedText';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Animated } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useThemeColors } from '@/app/contexts/ThemeColors';
+import { PlatformSelector, Platform as SocialPlatform } from '@/components/PlatformSelector';
+import { QuantitySelector } from '@/components/QuantitySelector';
 import DrawerButton from '@/components/DrawerButton';
 import { ChatInput } from '@/components/ChatInput';
-import { BotSwitch } from '@/components/BotSwitch';
-import { AiCircle } from '@/components/AiCircle';
 
-
-import { useRouter } from 'expo-router';
+interface Message {
+    id: string;
+    role: 'user' | 'assistant';
+    content?: string;
+    type?: 'text' | 'quantity-selector' | 'success';
+    data?: any;
+}
 
 const HomeScreen = () => {
-    const router = useRouter();
+    const colors = useThemeColors();
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [selectedPlatform, setSelectedPlatform] = useState<SocialPlatform | null>(null);
+    const scrollRef = useRef<ScrollView>(null);
 
-    const rightComponents = [
-        <BotSwitch />
-    ];
+    const handlePlatformSelect = (platform: SocialPlatform) => {
+        setSelectedPlatform(platform);
 
-    const leftComponent = [
-        <DrawerButton key="drawer-button" />,
-        <ThemedText key="app-title" className='text-2xl font-outfit-bold ml-4'>Luna<Text className="text-highlight">.</Text></ThemedText>
-    ];
+        // Add User Message
+        const userMsg: Message = {
+            id: Date.now().toString(),
+            role: 'user',
+            content: `I want to increase my ${platform} followers`,
+            type: 'text'
+        };
+
+        setMessages(prev => [...prev, userMsg]);
+
+        // Add Assistant Response (Quantity Selector)
+        setTimeout(() => {
+            const botMsg: Message = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                type: 'quantity-selector',
+                data: { platform }
+            };
+            setMessages(prev => [...prev, botMsg]);
+        }, 600);
+    };
+
+    const handleQuantityConfirm = (qty: number, price: number) => {
+        // Add User Confirmation
+        const userMsg: Message = {
+            id: Date.now().toString(),
+            role: 'user',
+            content: `Selected ${qty} followers for ${price} QAR`,
+            type: 'text'
+        };
+        setMessages(prev => [...prev, userMsg]);
+
+        // Add Assistant Success/Next Step
+        setTimeout(() => {
+            const botMsg: Message = {
+                id: (Date.now() + 1).toString(),
+                role: 'assistant',
+                content: "Great choice! To proceed with the campaign, please provide your profile link.",
+                type: 'text'
+            };
+            setMessages(prev => [...prev, botMsg]);
+        }, 600);
+    }
 
     return (
-        <View className="flex-1 bg-light-primary dark:bg-dark-primary relative">
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-                style={{ flex: 1 }}
-            >
-                <View style={{ flex: 1 }}>
-                    <Header
-                        title=""
-                        leftComponent={leftComponent}
-                        rightComponents={rightComponents} />
-                    <View className='flex-1 items-center justify-center relative'>
-                        <AiCircle />
-                        {/* Temporary Navigation Button for Testing */}
-                        <Pressable
-                            className="mt-8 bg-blue-500 px-4 py-2 rounded-lg"
-                            onPress={() => router.push('/screens/ai-voice')}
+        <View className="flex-1" style={{ backgroundColor: colors.bg }}>
+            <SafeAreaView className="flex-1">
+                {/* Custom Header */}
+                <View className="px-4 py-2 flex-row items-center justify-between z-10">
+                    <DrawerButton />
+                    {messages.length > 0 && <Text className="text-white font-bold text-xl">reach974</Text>}
+                    <View style={{ width: 40 }} />
+                </View>
+
+                {messages.length === 0 ? (
+                    // Initial State: Platform Selector
+                    <PlatformSelector onSelect={handlePlatformSelect} />
+                ) : (
+                    // Chat Interface
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                        className="flex-1"
+                    >
+                        <ScrollView
+                            ref={scrollRef}
+                            className="flex-1 px-4"
+                            contentContainerStyle={{ paddingBottom: 100 }}
+                            onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
                         >
-                            <Text className="text-white font-bold">Open AI Voice Agent</Text>
-                        </Pressable>
-                    </View>
-                    <ChatInput />
+                            {messages.map((msg) => (
+                                <View
+                                    key={msg.id}
+                                    className={`mb-4 w-full ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+                                >
+                                    {msg.type === 'text' && (
+                                        <View
+                                            style={{
+                                                backgroundColor: msg.role === 'user' ? colors.highlight : colors.secondary,
+                                                maxWidth: '80%'
+                                            }}
+                                            className="px-4 py-3 rounded-2xl"
+                                        >
+                                            <Text className="text-white text-base">{msg.content}</Text>
+                                        </View>
+                                    )}
 
+                                    {msg.type === 'quantity-selector' && (
+                                        <QuantitySelector
+                                            platform={msg.data.platform}
+                                            onConfirm={handleQuantityConfirm}
+                                        />
+                                    )}
+                                </View>
+                            ))}
+                        </ScrollView>
 
-                </View>
-                <View className='absolute h-screen w-screen right-0 top-0 items-center justify-center'>
-
-                </View>
-            </KeyboardAvoidingView>
+                        <ChatInput />
+                    </KeyboardAvoidingView>
+                )}
+            </SafeAreaView>
         </View>
     );
 };

@@ -5,19 +5,19 @@ export const useThemeColors = () => {
 
   return {
     icon: isDark ? 'white' : 'black',
-    bg: isDark ? '#171717' : '#f5f5f5',
-    invert: isDark ? '#000000' : '#ffffff',
-    secondary: isDark ? '#323232' : '#ffffff',
-    state: isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.3)',
-    sheet: isDark ? '#262626' : '#ffffff',
-    highlight: '#0EA5E9',    
-    lightDark: isDark ? '#262626' : 'white',
-    border: isDark ? '#404040' : '#E2E8F0',
-    text: isDark ? 'white' : 'black',
-    placeholder: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
-    switch: isDark ? 'rgba(255,255,255,0.4)' : '#ccc',
-    chatBg: isDark ? '#262626' : '#efefef',
-    isDark
+    bg: '#000000', // Pitch black for reach974
+    invert: '#ffffff',
+    secondary: '#1A1A1A', // Dark gray for secondary elements
+    state: 'rgba(255, 255, 255, 0.3)',
+    sheet: '#111111',
+    highlight: '#0000FF', // Neon Blue
+    lightDark: '#111111',
+    border: '#333333',
+    text: 'white',
+    placeholder: 'rgba(255,255,255,0.4)',
+    switch: 'rgba(255,255,255,0.4)',
+    chatBg: '#111111',
+    isDark: true // Force dark mode for now logic-wise, though this prop comes from context
   };
 };
 
