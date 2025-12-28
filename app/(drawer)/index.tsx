@@ -33,11 +33,21 @@ const HomeScreen = () => {
     };
 
     const startChat = (platform: SocialPlatform, context: UserContext) => {
-        // Initial Chat State
+        // Custom Message based on Context
+        let initialText = `Great — let’s work on your ${platform} visibility.\nWhat’s your goal?`;
+
+        if (context === 'Individual') {
+            initialText = `Great! Let's get more followers for your ${platform} profile to boost your social proof.`;
+        } else if (context === 'Business / Brand') {
+            initialText = `Excellent. Let's expand your ${platform} reach and drive more visibility for your business.`;
+        } else if (context === 'Creator / Influencer') {
+            initialText = `Awesome. Let's build your personal brand on ${platform} and increase your influence.`;
+        }
+
         const botMsg: Message = {
             id: Date.now().toString(),
             role: 'assistant',
-            content: `Great — let’s work on your ${platform} visibility.\nWhat’s your goal?`,
+            content: initialText,
             type: 'text'
         };
         setMessages([botMsg]);
@@ -50,7 +60,7 @@ const HomeScreen = () => {
                 data: { platform }
             };
             setMessages(prev => [...prev, quantityMsg]);
-        }, 1000);
+        }, 1200);
     }
 
     const handleQuantityConfirm = (qty: number, price: number) => {
