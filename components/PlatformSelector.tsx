@@ -25,7 +25,11 @@ export const PlatformSelector = ({ onSelect }: PlatformSelectorProps) => {
         <View className="flex-1 justify-center items-center px-6">
             <View className="items-center mb-16">
                 {/* Logo Area */}
-                <Text className="text-white text-lg font-bold mb-12 opacity-50 tracking-widest">REACH974</Text>
+                <Image
+                    source={require('@/assets/logoreach.png')}
+                    style={{ width: 140, height: 50, resizeMode: 'contain', opacity: 0.9 }}
+                    className="mb-12"
+                />
 
                 <Text className="text-white text-xl font-medium mb-6 text-center leading-8">
                     Choose a platform to start growing your audience
