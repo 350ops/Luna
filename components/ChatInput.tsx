@@ -243,7 +243,7 @@ export const ChatInput = (props: ChatInputProps) => {
                         <Pressable
                             onPress={handleSendMessage}
                             className='items-center flex justify-center w-10 h-10 bg-dark-primary dark:bg-white rounded-full'>
-                            <Icon name='Send' size={17} color={colors.invert} />
+                            <Icon name='Send' size={17} color={colors.isDark ? colors.bg : colors.invert} />
                         </Pressable>
                     </View>
                 </View>

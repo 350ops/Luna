@@ -13,25 +13,31 @@ NativeWindStyleSheet.setOutput({
   default: 'native',
 });
 
+import { StripeProvider } from '@stripe/stripe-react-native';
+
 function ThemedLayout() {
   const { ThemedStatusBar, screenOptions } = useThemedNavigation();
-  
+
   return (
     <>
       <ThemedStatusBar />
-        <Stack screenOptions={screenOptions}>
-          <Stack.Screen
-            name="(drawer)"
-            options={{ headerShown: false}}
-          />
-        </Stack>
+      <Stack screenOptions={screenOptions}>
+        <Stack.Screen
+          name="(drawer)"
+          options={{ headerShown: false }}
+        />
+      </Stack>
     </>
   );
 }
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView className={`bg-light-primary dark:bg-dark-primary ${Platform.OS === 'ios' ? 'pb-0 ' : ''}`} style={{ flex: 1 }}>
+    <StripeProvider
+      publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
+      merchantIdentifier="merchant.com.mmdev13.luna"
+    >
+      <GestureHandlerRootView className={`bg-light-primary dark:bg-dark-primary ${Platform.OS === 'ios' ? 'pb-0 ' : ''}`} style={{ flex: 1 }}>
 
         <ThemeProvider>
           <DrawerProvider>
@@ -39,6 +45,7 @@ export default function RootLayout() {
           </DrawerProvider>
         </ThemeProvider>
 
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>
+    </StripeProvider>
   );
 }

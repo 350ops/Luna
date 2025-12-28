@@ -7,6 +7,7 @@ import { ContextSelector, UserContext } from '@/components/ContextSelector';
 import { QuantitySelector } from '@/components/QuantitySelector';
 import DrawerButton from '@/components/DrawerButton';
 import { ChatInput } from '@/components/ChatInput';
+import TestPayment from '@/components/TestPayment';
 
 interface Message {
     id: string;
@@ -134,7 +135,18 @@ const HomeScreen = () => {
                     ))}
                 </ScrollView>
 
-                <ChatInput />
+                <ChatInput onSendMessage={(text) => {
+                    const userMsg: Message = {
+                        id: Date.now().toString(),
+                        role: 'user',
+                        content: text,
+                        type: 'text'
+                    };
+                    setMessages(prev => [...prev, userMsg]);
+
+                    // Optional: Add a simple auto-reply if needed, or just let it be
+                    // For now, functionality is key.
+                }} />
             </KeyboardAvoidingView>
         );
     };
@@ -149,6 +161,9 @@ const HomeScreen = () => {
                     {(selectedPlatform) && <Text className="text-white font-bold text-xl">reach974</Text>}
                     <View style={{ width: 40 }} />
                 </View>
+
+                {/* Test Payment Button */}
+                <TestPayment />
 
                 {renderContent()}
 

@@ -11,11 +11,23 @@
     },
     "platforms": [
       "ios",
-      "android"
+      "android",
+      "web"
     ],
+    "web": {
+      "bundler": "metro",
+      "output": "server"
+    },
     "plugins": [
       "expo-router",
       "expo-font",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.mmdev13.luna",
+          "enableGooglePay": true
+        }
+      ],
       [
         "@config-plugins/react-native-webrtc",
         {
