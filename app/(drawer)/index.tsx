@@ -10,7 +10,10 @@ import { BotSwitch } from '@/components/BotSwitch';
 import { AiCircle } from '@/components/AiCircle';
 
 
+import { useRouter } from 'expo-router';
+
 const HomeScreen = () => {
+    const router = useRouter();
 
     const rightComponents = [
         <BotSwitch />
@@ -35,6 +38,13 @@ const HomeScreen = () => {
                         rightComponents={rightComponents} />
                     <View className='flex-1 items-center justify-center relative'>
                         <AiCircle />
+                        {/* Temporary Navigation Button for Testing */}
+                        <Pressable
+                            className="mt-8 bg-blue-500 px-4 py-2 rounded-lg"
+                            onPress={() => router.push('/screens/ai-voice')}
+                        >
+                            <Text className="text-white font-bold">Open AI Voice Agent</Text>
+                        </Pressable>
                     </View>
                     <ChatInput />
 

@@ -6,14 +6,22 @@
     "version": "1.0.0",
     "runtimeVersion": "1.0.0",
     "scheme": "luna",
-   
     "experiments": {
       "tsconfigPaths": true
     },
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "microphonePermission": "Allow Luna to access your microphone for voice conversations."
+        }
+      ]
     ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,7 +35,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bitcode": false,
+      "bundleIdentifier": "com.mmdev13.luna"
     },
     "android": {
       "adaptiveIcon": {
@@ -40,19 +50,25 @@
         "enableOnBackInvokedCallback": false
       },
       "navigationBarColor": "transparent",
-      "navigationBarHidden": true
+      "navigationBarHidden": true,
+      "permissions": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.CAMERA",
+        "android.permission.INTERNET",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WAKE_LOCK",
+        "android.permission.BLUETOOTH"
+      ]
     },
     "extra": {
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "a0a0f625-0457-4ab7-a22f-509a24238a11"
+        "projectId": "dda0ffb6-9ccc-430a-b6ff-d4cc9844c2a2"
       }
-    },
-    "owner": "thomino",
-    "updates": {
-      "url": "https://u.expo.dev/a0a0f625-0457-4ab7-a22f-509a24238a11"
     }
   }
 }
