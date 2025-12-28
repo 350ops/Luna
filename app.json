@@ -37,7 +37,7 @@
     "ios": {
       "supportsTablet": true,
       "bitcode": false,
-      "bundleIdentifier": "com.mmdev13.luna"
+      "bundleIdentifier": "com.mmdev13.reach974"
     },
     "android": {
       "adaptiveIcon": {
