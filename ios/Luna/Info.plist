@@ -7,7 +7,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>Luna</string>
+    <string>reach974</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>luna</string>
-          <string>com.mmdev13.luna</string>
+          <string>com.mmdev13.reach974</string>
         </array>
       </dict>
     </array>
