@@ -1,25 +1,17 @@
 import React from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
-import { Svg, Circle, Path } from 'react-native-svg';
 import { useThemeColors } from '@/app/contexts/ThemeColors';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-// SVG Icons (Simplified for now, ideally we'd use proper SVG files or an icon set)
-// Using colorful circles as placeholders for brand colors if actual svgs are complex to inline here without proper paths.
-// But I will try to use lucide icons where possible or simple colored visual indicators.
-// Actually, for "Instagram", "TikTok", etc., Lucide might not have them all. 
-// I'll use FontAwesome via @expo/vector-icons or just colored placeholders for the MVP.
-import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-
-
-export type Platform = 'Instagram' | 'TikTok' | 'Google' | 'Snapchat';
+export type Platform = 'Instagram' | 'TikTok' | 'Google' | 'Snapchat' | 'Facebook';
 
 interface PlatformSelectorProps {
     onSelect: (platform: Platform) => void;
 }
 
 const PlatformItem = ({ name, icon, color, onPress }: { name: string, icon: any, color: string, onPress: () => void }) => (
-    <Pressable onPress={onPress} className="items-center justify-center m-4">
-        <View style={{ backgroundColor: color }} className="w-16 h-16 rounded-full items-center justify-center mb-2 shadow-lg shadow-black/50">
+    <Pressable onPress={onPress} className="items-center justify-center m-3">
+        <View style={{ backgroundColor: color }} className="w-16 h-16 rounded-full items-center justify-center mb-2 shadow-sm shadow-black/50">
             {icon}
         </View>
         <Text className="text-white font-medium text-xs">{name}</Text>
@@ -30,21 +22,21 @@ export const PlatformSelector = ({ onSelect }: PlatformSelectorProps) => {
     const colors = useThemeColors();
 
     return (
-        <View className="flex-1 justify-center items-center">
-            <Text className="text-white text-3xl font-bold mb-2">reach974</Text>
+        <View className="flex-1 justify-center items-center px-6">
+            <View className="items-center mb-12">
+                {/* Logo Area */}
+                <Text className="text-white text-3xl font-bold mb-8">reach974</Text>
 
-            <Text className="text-white text-4xl font-bold mb-2 text-center">
-                Visibility. <Text style={{ color: colors.placeholder }}>Awareness.</Text>
-            </Text>
-            <Text className="text-white text-4xl font-bold mb-8 text-center">
-                Growth. <Text style={{ color: colors.highlight }}>REACH.</Text>
-            </Text>
+                <Text className="text-white text-2xl font-bold mb-4 text-center leading-8">
+                    Choose a platform to start growing your audience
+                </Text>
 
-            <Text className="text-gray-400 text-sm mb-12 text-center px-8">
-                Designed for creators and businesses looking to grow their social audience through controlled visibility.
-            </Text>
+                <Text className="text-gray-400 text-sm text-center px-4 leading-5">
+                    Structured visibility campaigns designed for creators and businesses in Qatar.
+                </Text>
+            </View>
 
-            <View className="flex-row flex-wrap justify-center gap-4">
+            <View className="flex-row flex-wrap justify-center gap-2 mb-12">
                 <PlatformItem
                     name="Instagram"
                     color="#E1306C"
@@ -53,9 +45,15 @@ export const PlatformSelector = ({ onSelect }: PlatformSelectorProps) => {
                 />
                 <PlatformItem
                     name="TikTok"
-                    color="#000000" // TikTok uses black/cyan/magenta usually, pure black circle with white icon works
+                    color="#000000"
                     icon={<FontAwesome5 name="tiktok" size={28} color="white" />}
                     onPress={() => onSelect('TikTok')}
+                />
+                <PlatformItem
+                    name="Facebook"
+                    color="#1877F2"
+                    icon={<FontAwesome5 name="facebook-f" size={32} color="white" />}
+                    onPress={() => onSelect('Facebook')}
                 />
                 <PlatformItem
                     name="Google"
@@ -69,6 +67,12 @@ export const PlatformSelector = ({ onSelect }: PlatformSelectorProps) => {
                     icon={<FontAwesome5 name="snapchat-ghost" size={30} color="black" />}
                     onPress={() => onSelect('Snapchat')}
                 />
+            </View>
+
+            <View className="absolute bottom-10 w-full items-center">
+                <Text className="text-gray-600 text-xs">
+                    No login required · No account access needed
+                </Text>
             </View>
         </View>
     );

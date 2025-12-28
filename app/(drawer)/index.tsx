@@ -3,6 +3,7 @@ import { View, Text, KeyboardAvoidingView, Platform, ScrollView, Animated } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColors } from '@/app/contexts/ThemeColors';
 import { PlatformSelector, Platform as SocialPlatform } from '@/components/PlatformSelector';
+import { ContextSelector, UserContext } from '@/components/ContextSelector';
 import { QuantitySelector } from '@/components/QuantitySelector';
 import DrawerButton from '@/components/DrawerButton';
 import { ChatInput } from '@/components/ChatInput';
@@ -19,32 +20,38 @@ const HomeScreen = () => {
     const colors = useThemeColors();
     const [messages, setMessages] = useState<Message[]>([]);
     const [selectedPlatform, setSelectedPlatform] = useState<SocialPlatform | null>(null);
+    const [selectedContext, setSelectedContext] = useState<UserContext | null>(null);
     const scrollRef = useRef<ScrollView>(null);
 
     const handlePlatformSelect = (platform: SocialPlatform) => {
         setSelectedPlatform(platform);
+    };
 
-        // Add User Message
-        const userMsg: Message = {
+    const handleContextSelect = (context: UserContext) => {
+        setSelectedContext(context);
+        startChat(selectedPlatform!, context);
+    };
+
+    const startChat = (platform: SocialPlatform, context: UserContext) => {
+        // Initial Chat State
+        const botMsg: Message = {
             id: Date.now().toString(),
-            role: 'user',
-            content: `I want to increase my ${platform} followers`,
+            role: 'assistant',
+            content: `Great — let’s work on your ${platform} visibility.\nWhat’s your goal?`,
             type: 'text'
         };
+        setMessages([botMsg]);
 
-        setMessages(prev => [...prev, userMsg]);
-
-        // Add Assistant Response (Quantity Selector)
         setTimeout(() => {
-            const botMsg: Message = {
+            const quantityMsg: Message = {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
                 type: 'quantity-selector',
                 data: { platform }
             };
-            setMessages(prev => [...prev, botMsg]);
-        }, 600);
-    };
+            setMessages(prev => [...prev, quantityMsg]);
+        }, 1000);
+    }
 
     const handleQuantityConfirm = (qty: number, price: number) => {
         // Add User Confirmation
@@ -68,61 +75,73 @@ const HomeScreen = () => {
         }, 600);
     }
 
+    // Render Logic
+    const renderContent = () => {
+        if (!selectedPlatform) {
+            return <PlatformSelector onSelect={handlePlatformSelect} />;
+        }
+        if (!selectedContext) {
+            return <ContextSelector onSelect={handleContextSelect} />;
+        }
+
+        // Chat Interface
+        return (
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                className="flex-1"
+            >
+                <ScrollView
+                    ref={scrollRef}
+                    className="flex-1 px-4"
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+                >
+                    {messages.map((msg) => (
+                        <View
+                            key={msg.id}
+                            className={`mb-4 w-full ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+                        >
+                            {msg.type === 'text' && (
+                                <View
+                                    style={{
+                                        backgroundColor: msg.role === 'user' ? colors.highlight : colors.secondary,
+                                        maxWidth: '80%'
+                                    }}
+                                    className="px-4 py-3 rounded-2xl"
+                                >
+                                    <Text className="text-white text-base">{msg.content}</Text>
+                                </View>
+                            )}
+
+                            {msg.type === 'quantity-selector' && (
+                                <QuantitySelector
+                                    platform={msg.data.platform}
+                                    onConfirm={handleQuantityConfirm}
+                                // Pass context if pricing differs?
+                                />
+                            )}
+                        </View>
+                    ))}
+                </ScrollView>
+
+                <ChatInput />
+            </KeyboardAvoidingView>
+        );
+    };
+
     return (
         <View className="flex-1" style={{ backgroundColor: colors.bg }}>
             <SafeAreaView className="flex-1">
                 {/* Custom Header */}
                 <View className="px-4 py-2 flex-row items-center justify-between z-10">
                     <DrawerButton />
-                    {messages.length > 0 && <Text className="text-white font-bold text-xl">reach974</Text>}
+                    {/* Show Title only in Chat or Context mode */}
+                    {(selectedPlatform) && <Text className="text-white font-bold text-xl">reach974</Text>}
                     <View style={{ width: 40 }} />
                 </View>
 
-                {messages.length === 0 ? (
-                    // Initial State: Platform Selector
-                    <PlatformSelector onSelect={handlePlatformSelect} />
-                ) : (
-                    // Chat Interface
-                    <KeyboardAvoidingView
-                        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-                        className="flex-1"
-                    >
-                        <ScrollView
-                            ref={scrollRef}
-                            className="flex-1 px-4"
-                            contentContainerStyle={{ paddingBottom: 100 }}
-                            onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
-                        >
-                            {messages.map((msg) => (
-                                <View
-                                    key={msg.id}
-                                    className={`mb-4 w-full ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
-                                >
-                                    {msg.type === 'text' && (
-                                        <View
-                                            style={{
-                                                backgroundColor: msg.role === 'user' ? colors.highlight : colors.secondary,
-                                                maxWidth: '80%'
-                                            }}
-                                            className="px-4 py-3 rounded-2xl"
-                                        >
-                                            <Text className="text-white text-base">{msg.content}</Text>
-                                        </View>
-                                    )}
+                {renderContent()}
 
-                                    {msg.type === 'quantity-selector' && (
-                                        <QuantitySelector
-                                            platform={msg.data.platform}
-                                            onConfirm={handleQuantityConfirm}
-                                        />
-                                    )}
-                                </View>
-                            ))}
-                        </ScrollView>
-
-                        <ChatInput />
-                    </KeyboardAvoidingView>
-                )}
             </SafeAreaView>
         </View>
     );
