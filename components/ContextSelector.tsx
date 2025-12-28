@@ -3,7 +3,7 @@ import { View, Text, Pressable } from 'react-native';
 import { useThemeColors } from '@/app/contexts/ThemeColors';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-export type UserContext = 'Creator / Influencer' | 'Business / Brand';
+export type UserContext = 'Creator / Influencer' | 'Business / Brand' | 'Individual';
 
 interface ContextSelectorProps {
     onSelect: (context: UserContext) => void;
@@ -12,7 +12,7 @@ interface ContextSelectorProps {
 export const ContextSelector = ({ onSelect }: ContextSelectorProps) => {
     const colors = useThemeColors();
 
-    const OptionCard = ({ title, icon, color }: { title: UserContext, icon: string, color: string }) => (
+    const OptionCard = ({ title, description, icon, color }: { title: UserContext, description: string, icon: string, color: string }) => (
         <Pressable
             onPress={() => onSelect(title)}
             style={{ backgroundColor: colors.secondary }}
@@ -22,11 +22,9 @@ export const ContextSelector = ({ onSelect }: ContextSelectorProps) => {
                 <View style={{ backgroundColor: color }} className="w-12 h-12 rounded-full items-center justify-center mr-4">
                     <FontAwesome5 name={icon} size={20} color="white" />
                 </View>
-                <View>
+                <View className="flex-1">
                     <Text className="text-white text-lg font-bold">{title}</Text>
-                    <Text className="text-gray-400 text-xs">
-                        {title === 'Creator / Influencer' ? 'Build your personal brand' : 'Expand your market reach'}
-                    </Text>
+                    <Text className="text-gray-400 text-xs">{description}</Text>
                 </View>
             </View>
         </Pressable>
@@ -42,14 +40,23 @@ export const ContextSelector = ({ onSelect }: ContextSelectorProps) => {
 
             <OptionCard
                 title="Creator / Influencer"
+                description="Build your personal brand"
                 icon="user-astronaut"
                 color="#8B5CF6"
             />
 
             <OptionCard
                 title="Business / Brand"
+                description="Expand your market reach"
                 icon="building"
                 color="#3B82F6"
+            />
+
+            <OptionCard
+                title="Individual"
+                description="Boost your personal profile"
+                icon="user"
+                color="#10B981"
             />
         </View>
     );
